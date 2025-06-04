@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/backgroundLight">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Recipe Title -->
+        <TextView
+            android:id="@+id/recipeTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recipe Title"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/textPrimary"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Recipe Image -->
+        <ImageView
+            android:id="@+id/recipeImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Recipe Image"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/background" />
+
+        <!-- Preparation time and rating -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/prepTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30 min"
+                android:textColor="@color/textSecondary"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4.5 ★★★★ (278)"
+                android:textColor="@color/textSecondary"
+                android:textSize="16sp"
+                android:layout_marginStart="24dp" />
+        </LinearLayout>
+
+        <!-- Recipe Description -->
+        <TextView
+            android:id="@+id/recipeDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Here goes the detailed description of the recipe, including ingredients, steps, and tips."
+            android:textColor="@color/textPrimary"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,94 @@
+<!-- Login Page (login_activity.xml) -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Background image -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background" />
+
+    <!-- Semi-transparent black overlay -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000" />
+
+    <!-- Login form container -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp">
+
+            <TextView
+                android:id="@+id/appName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Eat and Share"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="@color/primarycolor2"
+                android:layout_marginBottom="32dp"
+                android:shadowColor="#99000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2" />
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/textPrimary"
+                android:textColorHint="@color/textSecondary"
+                android:backgroundTint="@color/textPrimary" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:layout_marginBottom="24dp"
+                android:textColor="@color/textPrimary"
+                android:textColorHint="@color/textSecondary"
+                android:backgroundTint="@color/textPrimary" />
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:backgroundTint="@color/primaryColor"
+                android:textColor="@color/white"
+                android:padding="12dp"
+                android:onClick="navigateToHomepage"
+                android:layout_marginBottom="16dp"
+                android:textAllCaps="false"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/registerLink"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account? Register"
+                android:textSize="20dp"
+                android:textColor="@color/accentColor"
+                android:layout_marginTop="16dp"
+                android:onClick="navigateToRegisterPage" />
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

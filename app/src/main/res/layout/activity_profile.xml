@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/white"
+    android:paddingBottom="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="32dp"
+        tools:context=".ProfileActivity">
+
+        <!-- Profile Header -->
+        <LinearLayout
+            android:id="@+id/profileHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingBottom="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:contentDescription="Profile image"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_background"
+                android:elevation="8dp" />
+
+            <TextView
+                android:id="@+id/profileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John Doe"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/textPrimary"
+                android:layout_marginTop="24dp"
+                android:letterSpacing="0.02" />
+
+            <TextView
+                android:id="@+id/profileEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="johndoe@gmail.com"
+                android:textSize="16sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <!-- Account Settings Section -->
+        <TextView
+            android:id="@+id/accountSettingsLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Account Settings"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/textPrimary"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileHeader" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/accountCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/accountSettingsLabel">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingVertical="8dp">
+
+                <TextView
+                    android:id="@+id/editProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Profile"
+                    android:textSize="16sp"
+                    android:textColor="@color/textPrimary"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@color/textSecondary" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@color/dividerColor" />
+
+                <TextView
+                    android:id="@+id/changePassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Change Password"
+                    android:textSize="16sp"
+                    android:textColor="@color/textPrimary"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@color/textSecondary" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Action Buttons Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/accountCard">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logoutButton"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Log Out"
+                    android:textColor="@color/errorColor"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:strokeColor="@color/errorColor"
+                    app:strokeWidth="1dp"
+                    android:textAllCaps="false"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/deleteAccountButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="Delete Account"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/errorColor"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="16dp"
+                    android:textSize="16sp"
+                    style="@style/Widget.MaterialComponents.Button" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

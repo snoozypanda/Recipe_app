@@ -1,0 +1,14 @@
+<resources>
+    <!-- Primary App Colors -->
+    <color name="primaryColor">#4CAF50</color>
+    <color name="primarycolor2">#E63946</color><!-- Fresh green for main buttons and accents -->
+    <color name="primaryDarkColor">#388E3C</color> <!-- Darker shade for pressed states -->
+    <color name="accentColor">#FF9800</color> <!-- Accent color for highlights -->
+    <color name="white">#FFFFFF</color>
+    <color name="textPrimary">#212121</color> <!-- Main text color -->
+    <color name="textSecondary">#757575</color> <!-- Secondary text color -->
+    <color name="backgroundLight">#F9F9F9</color> <!-- Light background color for cards -->
+    <color name="dividerColor">#E0E0E0</color> <!-- Light gray for dividers -->
+    <color name="errorColor">#F44336</color> <!-- Error messages -->
+
+</resources>

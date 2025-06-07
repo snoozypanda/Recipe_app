@@ -27,7 +27,7 @@ class Homepage : AppCompatActivity() {
             startActivity(Intent(this, Homepage::class.java))
         }
         findViewById<Button>(R.id.nav_profile).setOnClickListener {
-            startActivity(Intent(this, profile::class.java))
+            startActivity(Intent(this, Profile::class.java))
         }
         findViewById<Button>(R.id.nav_favorite).setOnClickListener {
             startActivity(Intent(this, Favorite::class.java))

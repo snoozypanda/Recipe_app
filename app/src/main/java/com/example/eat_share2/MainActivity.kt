@@ -105,6 +105,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun navigateToRegisterPage(view: View) {
-        startActivity(Intent(this, Registration_page::class.java))
+        startActivity(Intent(this, RegistrationPage::class.java))
     }
 }

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.eat_share2.databinding.ActivityRegistrationPageBinding
 import com.example.eat_share2.repository.AuthRepository
 import com.example.eat_share2.utils.TokenManager
 import kotlinx.coroutines.launch
@@ -19,30 +20,21 @@ class RegistrationPage : AppCompatActivity() {
 
     private lateinit var authRepository: AuthRepository
     private lateinit var tokenManager: TokenManager
-    private lateinit var fullNameEditText: EditText
-    private lateinit var emailEditText: EditText
-    private lateinit var usernameEditText: EditText
-    private lateinit var passwordEditText: EditText
-    private lateinit var registerButton: Button
+
+    private  lateinit var binding: ActivityRegistrationPageBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_registration_page)
+        binding = ActivityRegistrationPageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Initialize TokenManager and AuthRepository
         tokenManager = TokenManager(this)
         authRepository = AuthRepository(tokenManager)
 
-        // Initialize views
-        fullNameEditText = findViewById(R.id.fullName)
-        emailEditText = findViewById(R.id.email)
-        usernameEditText = findViewById(R.id.registerUsername)
-        passwordEditText = findViewById(R.id.registerPassword)
-        registerButton = findViewById(R.id.registerButton)
-
         // Set up register button click listener
-        registerButton.setOnClickListener {
+        binding.registerButton.setOnClickListener {
             performSignup()
         }
 
@@ -55,45 +47,45 @@ class RegistrationPage : AppCompatActivity() {
     }
 
     private fun performSignup() {
-        val fullName = fullNameEditText.text.toString().trim()
-        val email = emailEditText.text.toString().trim()
-        val username = usernameEditText.text.toString().trim()
-        val password = passwordEditText.text.toString().trim()
+        val fullName = binding.fullName.text.toString().trim()
+        val email = binding.email.text.toString().trim()
+        val username = binding.registerUsername.text.toString().trim()
+        val password = binding.registerPassword.text.toString().trim()
 
         // Validate input
         if (fullName.isEmpty()) {
-            fullNameEditText.error = "Full name is required"
+            binding.fullName.error = "Full name is required"
             return
         }
 
         if (email.isEmpty()) {
-            emailEditText.error = "Email is required"
+            binding.email.error = "Email is required"
             return
         }
 
         if (!isValidEmail(email)) {
-            emailEditText.error = "Please enter a valid email"
+            binding.email.error = "Please enter a valid email"
             return
         }
 
         if (username.isEmpty()) {
-            usernameEditText.error = "Username is required"
+            binding.registerUsername.error = "Username is required"
             return
         }
 
         if (password.isEmpty()) {
-            passwordEditText.error = "Password is required"
+            binding.registerPassword.error = "Password is required"
             return
         }
 
         if (password.length < 6) {
-            passwordEditText.error = "Password must be at least 6 characters"
+            binding.registerPassword.error = "Password must be at least 6 characters"
             return
         }
 
         // Disable register button to prevent multiple requests
-        registerButton.isEnabled = false
-        registerButton.text = "Creating Account..."
+        binding.registerButton.isEnabled = false
+        binding.registerButton.text = "Creating Account..."
 
         // Perform signup API call
         lifecycleScope.launch {
@@ -120,8 +112,8 @@ class RegistrationPage : AppCompatActivity() {
                         Toast.LENGTH_LONG).show()
 
                     // Re-enable register button
-                    registerButton.isEnabled = true
-                    registerButton.text = "Register"
+                    binding.registerButton.isEnabled = true
+                    binding.registerButton.text = "Register"
                 }
         }
     }

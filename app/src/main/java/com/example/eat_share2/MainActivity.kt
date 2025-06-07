@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.eat_share2.databinding.ActivityMainBinding
 import com.example.eat_share2.repository.AuthRepository
 import com.example.eat_share2.utils.TokenManager
 import kotlinx.coroutines.launch
@@ -19,14 +20,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var authRepository: AuthRepository
     private lateinit var tokenManager: TokenManager
-    private lateinit var usernameEditText: EditText
-    private lateinit var passwordEditText: EditText
-    private lateinit var loginButton: Button
+
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Initialize TokenManager and AuthRepository
         tokenManager = TokenManager(this)
@@ -38,13 +39,8 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // Initialize views
-        usernameEditText = findViewById(R.id.username)
-        passwordEditText = findViewById(R.id.password)
-        loginButton = findViewById(R.id.loginButton)
-
         // Set up login button click listener
-        loginButton.setOnClickListener {
+        binding.loginButton.setOnClickListener {
             performLogin()
         }
 
@@ -57,23 +53,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performLogin() {
-        val username = usernameEditText.text.toString().trim()
-        val password = passwordEditText.text.toString().trim()
+        val username = binding.username.text.toString().trim()
+        val password = binding.password.text.toString().trim()
 
         // Validate input
         if (username.isEmpty()) {
-            usernameEditText.error = "Username is required"
+            binding.username.error = "Username is required"
             return
         }
 
         if (password.isEmpty()) {
-            passwordEditText.error = "Password is required"
+            binding.password.error = "Password is required"
             return
         }
 
         // Disable login button to prevent multiple requests
-        loginButton.isEnabled = false
-        loginButton.text = "Logging in..."
+        binding.loginButton.isEnabled = false
+        binding.loginButton.text = "Logging in..."
 
         // Perform login API call
         lifecycleScope.launch {
@@ -88,8 +84,8 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "Login failed: ${exception.message}", Toast.LENGTH_LONG).show()
 
                     // Re-enable login button
-                    loginButton.isEnabled = true
-                    loginButton.text = "Login"
+                    binding.loginButton.isEnabled = true
+                    binding.loginButton.text = "Login"
                 }
         }
     }

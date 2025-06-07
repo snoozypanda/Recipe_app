@@ -1,17 +1,17 @@
-package com.example.eat_share2
+package com.example.eat_share2.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.eat_share2.R
 import com.example.eat_share2.repository.AuthRepository
 import com.example.eat_share2.utils.TokenManager
 
-class Profile : AppCompatActivity() {
+class ProfileActivity : BaseActivity() {
 
     private lateinit var authRepository: AuthRepository
     private lateinit var tokenManager: TokenManager
@@ -38,6 +38,9 @@ class Profile : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Setup bottom navigation
+        setupBottomNavigation()
     }
 
     private fun loadUserData() {

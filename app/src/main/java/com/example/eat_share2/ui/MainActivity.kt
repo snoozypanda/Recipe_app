@@ -1,4 +1,4 @@
-package com.example.eat_share2
+package com.example.eat_share2.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.eat_share2.R
 import com.example.eat_share2.databinding.ActivityMainBinding
 import com.example.eat_share2.repository.AuthRepository
 import com.example.eat_share2.utils.TokenManager
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateToHomepage() {
-        startActivity(Intent(this, Homepage::class.java))
+        startActivity(Intent(this, HomepageActivity::class.java))
         finish() // Prevent going back to login screen
     }
 
@@ -99,6 +100,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun navigateToRegisterPage(view: View) {
-        startActivity(Intent(this, RegistrationPage::class.java))
+        startActivity(Intent(this, RegistrationPageActivity::class.java))
     }
 }

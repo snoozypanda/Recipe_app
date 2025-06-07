@@ -50,9 +50,9 @@
                 android:hint="Username"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/white"
                 android:textColorHint="@color/textSecondary"
-                android:backgroundTint="@color/textPrimary" />
+                android:backgroundTint="@color/backgroundLight" />
 
             <EditText
                 android:id="@+id/password"
@@ -62,9 +62,9 @@
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:layout_marginBottom="24dp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/white"
                 android:textColorHint="@color/textSecondary"
-                android:backgroundTint="@color/textPrimary" />
+                android:backgroundTint="@color/backgroundLight" />
 
             <Button
                 android:id="@+id/loginButton"

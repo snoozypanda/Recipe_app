@@ -51,9 +51,9 @@
                 android:hint="Full Name"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/white"
                 android:textColorHint="@color/textSecondary"
-                android:backgroundTint="@color/textPrimary" />
+                android:backgroundTint="@color/backgroundLight" />
 
             <EditText
                 android:id="@+id/email"
@@ -63,9 +63,9 @@
                 android:inputType="textEmailAddress"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/white"
                 android:textColorHint="@color/textSecondary"
-                android:backgroundTint="@color/textPrimary" />
+                android:backgroundTint="@color/backgroundLight" />
 
             <EditText
                 android:id="@+id/registerUsername"
@@ -74,9 +74,9 @@
                 android:hint="Username"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/white"
                 android:textColorHint="@color/textSecondary"
-                android:backgroundTint="@color/textPrimary" />
+                android:backgroundTint="@color/backgroundLight" />
 
             <EditText
                 android:id="@+id/registerPassword"
@@ -86,9 +86,9 @@
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:layout_marginBottom="24dp"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/white"
                 android:textColorHint="@color/textSecondary"
-                android:backgroundTint="@color/textPrimary" />
+                android:backgroundTint="@color/backgroundLight" />
 
             <Button
                 android:id="@+id/registerButton"

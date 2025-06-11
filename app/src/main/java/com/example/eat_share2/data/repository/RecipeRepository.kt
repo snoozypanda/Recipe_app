@@ -133,7 +133,7 @@ class RecipeRepository(private val tokenManager: TokenManager) {
         val randomCategory = categoryOverride ?: categories.random().name
         val randomImage = placeholderImages.random()
         val randomPrepTime = listOf("15 min", "20 min", "25 min", "30 min", "35 min", "45 min").random()
-        val randomRating = (3.5f..5.0f).random()
+        val randomRating = ((3..5).random()).toFloat()
         val randomReviewCount = (50..500).random()
         
         return Recipe(

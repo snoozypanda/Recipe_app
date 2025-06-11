@@ -10,11 +10,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.eat_share2.R
 import com.example.eat_share2.databinding.ActivityHomepageBinding
-import com.example.eat_share2.ui.adapters.CategoryAdapter
 import com.example.eat_share2.ui.adapters.RecipeAdapter
 import com.example.eat_share2.ui.viewmodels.HomepageUiState
 import com.example.eat_share2.ui.viewmodels.HomepageViewModel
@@ -25,7 +23,6 @@ class HomepageActivity : BaseActivity() {
     private lateinit var binding: ActivityHomepageBinding
     private val viewModel: HomepageViewModel by viewModels()
 
-    private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var recipeAdapter: RecipeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,24 +43,16 @@ class HomepageActivity : BaseActivity() {
         setupSearchView()
         setupSwipeRefresh()
         setupEmptyState()
+        setupFab()
         observeViewModel()
+
+        // Check if we need to refresh (coming back from add recipe)
+        if (intent.getBooleanExtra("refresh", false)) {
+            viewModel.refreshData()
+        }
     }
 
     private fun setupRecyclerViews() {
-        // Setup category adapter
-        categoryAdapter = CategoryAdapter { category ->
-            if (viewModel.uiState.value.selectedCategory == category.name) {
-                viewModel.selectCategory(null) // Deselect if already selected
-            } else {
-                viewModel.selectCategory(category)
-            }
-        }
-
-        binding.categoriesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@HomepageActivity, LinearLayoutManager.HORIZONTAL, false)
-            adapter = categoryAdapter
-        }
-
         // Setup recipe adapter
         recipeAdapter = RecipeAdapter { recipe ->
             val intent = Intent(this, ViewRecipeActivity::class.java)
@@ -87,7 +76,6 @@ class HomepageActivity : BaseActivity() {
         binding.clearSearchButton.setOnClickListener {
             binding.searchEditText.text?.clear()
             viewModel.clearSearch()
-            categoryAdapter.setSelectedCategory(null)
         }
     }
 
@@ -106,7 +94,13 @@ class HomepageActivity : BaseActivity() {
         binding.clearFiltersButton.setOnClickListener {
             binding.searchEditText.text?.clear()
             viewModel.clearSearch()
-            categoryAdapter.setSelectedCategory(null)
+        }
+    }
+
+    private fun setupFab() {
+        binding.addRecipeFab.setOnClickListener {
+            val intent = Intent(this, AddRecipeActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -135,17 +129,10 @@ class HomepageActivity : BaseActivity() {
 
                 // Show/hide clear button
                 binding.clearSearchButton.visibility =
-                    if (uiState.searchQuery.isNotEmpty() || uiState.selectedCategory != null)
-                        View.VISIBLE else View.GONE
+                    if (uiState.searchQuery.isNotEmpty()) View.VISIBLE else View.GONE
 
                 // Update results text
                 updateResultsText(uiState)
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.categories.collect { categories ->
-                categoryAdapter.submitList(categories)
             }
         }
 
@@ -167,12 +154,8 @@ class HomepageActivity : BaseActivity() {
     private fun updateResultsText(uiState: HomepageUiState) {
         val recipesCount = recipeAdapter.itemCount
         val resultsText = when {
-            uiState.searchQuery.isNotEmpty() && uiState.selectedCategory != null ->
-                "Found $recipesCount recipes for \"${uiState.searchQuery}\" in ${uiState.selectedCategory}"
             uiState.searchQuery.isNotEmpty() ->
                 "Found $recipesCount recipes for \"${uiState.searchQuery}\""
-            uiState.selectedCategory != null ->
-                "$recipesCount ${uiState.selectedCategory} recipes"
             else -> "Popular Recipes ($recipesCount)"
         }
 

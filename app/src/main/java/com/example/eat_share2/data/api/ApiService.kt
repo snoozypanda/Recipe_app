@@ -1,5 +1,7 @@
 package com.example.eat_share2.data.api
 
+import com.example.eat_share2.data.models.CreateRecipeRequest
+import com.example.eat_share2.data.models.CreateRecipeResponse
 import com.example.eat_share2.data.models.LoginRequest
 import com.example.eat_share2.data.models.LoginResponse
 import com.example.eat_share2.data.models.RecipeDetailResponse
@@ -35,4 +37,7 @@ interface ApiService {
 
     @GET("user/{id}")
     suspend fun getUserById(@Path("id") userId: String): Response<UserResponse>
+
+    @POST("recipe")
+    suspend fun createRecipe(@Body createRecipeRequest: CreateRecipeRequest): Response<CreateRecipeResponse>
 }

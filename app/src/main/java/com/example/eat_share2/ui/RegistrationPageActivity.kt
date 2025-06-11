@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.eat_share2.R
 import com.example.eat_share2.databinding.ActivityRegistrationPageBinding
 import com.example.eat_share2.data.repository.AuthRepository
+import com.example.eat_share2.data.api.RetrofitClient
 import com.example.eat_share2.utils.TokenManager
 import kotlinx.coroutines.launch
 
@@ -31,6 +32,9 @@ class RegistrationPageActivity : AppCompatActivity() {
         // Initialize TokenManager and AuthRepository
         tokenManager = TokenManager(this)
         authRepository = AuthRepository(tokenManager)
+
+        // Initialize RetrofitClient with TokenManager for auth headers
+        RetrofitClient.initialize(tokenManager)
 
         // Set up register button click listener
         binding.registerButton.setOnClickListener {

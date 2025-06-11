@@ -7,6 +7,7 @@
     <color name="white">#FFFFFF</color>
     <color name="textPrimary">#212121</color> <!-- Main text color -->
     <color name="textSecondary">#757575</color> <!-- Secondary text color -->
+    <color name="textHint">#666666</color> <!-- Hint text color - more visible -->
     <color name="backgroundLight">#F9F9F9</color> <!-- Light background color for cards -->
     <color name="dividerColor">#E0E0E0</color> <!-- Light gray for dividers -->
     <color name="errorColor">#F44336</color> <!-- Error messages -->

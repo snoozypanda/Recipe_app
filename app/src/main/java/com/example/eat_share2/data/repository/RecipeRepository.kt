@@ -1,8 +1,10 @@
 package com.example.eat_share2.data.repository
 
 import com.example.eat_share2.data.api.RetrofitClient
+import com.example.eat_share2.data.models.AddIngredient
 import com.example.eat_share2.data.models.ApiRecipe
 import com.example.eat_share2.data.models.Category
+import com.example.eat_share2.data.models.CreateRecipeRequest
 import com.example.eat_share2.data.models.Recipe
 import com.example.eat_share2.data.models.RecipeDetailResponse
 import com.example.eat_share2.data.models.UserDetail
@@ -10,16 +12,6 @@ import com.example.eat_share2.utils.TokenManager
 import kotlinx.coroutines.delay
 
 class RecipeRepository(private val tokenManager: TokenManager) {
-
-    // Categories remain static as they're not provided by API
-    private val categories = listOf(
-        Category("1", "Breakfast", "🍳"),
-        Category("2", "Lunch", "🥗"),
-        Category("3", "Dinner", "🍽️"),
-        Category("4", "Dessert", "🍰"),
-        Category("5", "Snacks", "🍿"),
-        Category("6", "Beverages", "🥤")
-    )
 
     // Placeholder images for recipes
     private val placeholderImages = listOf(
@@ -30,10 +22,6 @@ class RecipeRepository(private val tokenManager: TokenManager) {
         "https://images.pexels.com/photos/725991/pexels-photo-725991.jpeg",
         "https://images.pexels.com/photos/1351238/pexels-photo-1351238.jpeg"
     )
-
-    suspend fun getCategories(): List<Category> {
-        return categories
-    }
 
     suspend fun getPopularRecipes(): Result<List<Recipe>> {
         return try {
@@ -87,30 +75,6 @@ class RecipeRepository(private val tokenManager: TokenManager) {
         }
     }
 
-    suspend fun getRecipesByCategory(category: String): Result<List<Recipe>> {
-        return try {
-            val response = RetrofitClient.apiService.getRecipesByCategory(category)
-
-            if (response.isSuccessful) {
-                val recipeResponse = response.body()
-                if (recipeResponse != null && recipeResponse.message == "success") {
-                    val recipes = recipeResponse.recipes?.map { apiRecipe ->
-                        convertApiRecipeToRecipe(apiRecipe, category)
-                    } ?: emptyList()
-
-                    Result.success(recipes)
-                } else {
-                    Result.failure(Exception("Failed to fetch category recipes: ${recipeResponse?.message ?: "Unknown error"}"))
-                }
-            } else {
-                val errorMessage = response.errorBody()?.string() ?: "Failed to fetch category recipes"
-                Result.failure(Exception(errorMessage))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
     suspend fun getRecipeDetailById(id: String): Result<RecipeDetailResponse> {
         return try {
             val response = RetrofitClient.apiService.getRecipeById(id)
@@ -153,6 +117,50 @@ class RecipeRepository(private val tokenManager: TokenManager) {
         }
     }
 
+    suspend fun createRecipe(
+        name: String,
+        description: String,
+        ingredients: List<AddIngredient>,
+        steps: List<String>
+    ): Result<ApiRecipe> {
+        return try {
+            // Get current user ID from token
+            val currentUserId = tokenManager.getUserId()
+            if (currentUserId.isNullOrBlank()) {
+                return Result.failure(Exception("User not logged in. Please log in and try again."))
+            }
+
+            val createRecipeRequest = CreateRecipeRequest(
+                name = name,
+                description = description,
+                ingredients = ingredients,
+                steps = steps,
+                userId = currentUserId // Include user ID in the request
+            )
+
+            val response = RetrofitClient.apiService.createRecipe(createRecipeRequest)
+
+            if (response.isSuccessful) {
+                val createRecipeResponse = response.body()
+                if (createRecipeResponse != null && createRecipeResponse.message == "Recipe created successfully") {
+                    val recipe = createRecipeResponse.recipe ?: ApiRecipe(
+                        id = "temp_id",
+                        name = name,
+                        description = description
+                    )
+                    Result.success(recipe)
+                } else {
+                    Result.failure(Exception("Failed to create recipe: ${createRecipeResponse?.message ?: "Unknown error"}"))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: "Failed to create recipe"
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getRecipeById(id: String): Result<Recipe?> {
         return try {
             // Since there's no specific endpoint for single recipe, we'll get all and filter
@@ -174,7 +182,6 @@ class RecipeRepository(private val tokenManager: TokenManager) {
 
     private fun convertApiRecipeToRecipe(apiRecipe: ApiRecipe, categoryOverride: String? = null): Recipe {
         // Generate random values for missing data
-        val randomCategory = categoryOverride ?: categories.random().name
         val randomImage = placeholderImages.random()
         val randomPrepTime = listOf("15 min", "20 min", "25 min", "30 min", "35 min", "45 min").random()
         val randomRating = (3..5).random().toFloat()
@@ -188,7 +195,7 @@ class RecipeRepository(private val tokenManager: TokenManager) {
             prepTime = randomPrepTime,
             rating = randomRating,
             reviewCount = randomReviewCount,
-            category = randomCategory,
+            category = categoryOverride ?: "General",
             difficulty = listOf("Easy", "Medium", "Hard").random(),
             servings = (2..6).random(),
             ingredients = generateRandomIngredients(),

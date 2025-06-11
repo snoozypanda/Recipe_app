@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.eat_share2.R
 import com.example.eat_share2.databinding.ActivityMainBinding
 import com.example.eat_share2.data.repository.AuthRepository
+import com.example.eat_share2.data.api.RetrofitClient
 import com.example.eat_share2.utils.TokenManager
 import kotlinx.coroutines.launch
 
@@ -31,6 +32,9 @@ class MainActivity : AppCompatActivity() {
         // Initialize TokenManager and AuthRepository
         tokenManager = TokenManager(this)
         authRepository = AuthRepository(tokenManager)
+
+        // Initialize RetrofitClient with TokenManager for auth headers
+        RetrofitClient.initialize(tokenManager)
 
         // Check if user is already logged in
         if (authRepository.isLoggedIn()) {

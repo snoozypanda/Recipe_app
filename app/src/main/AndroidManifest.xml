@@ -17,6 +17,10 @@
         android:theme="@style/Theme.Eatshare2"
         tools:targetApi="31">
         <activity
+            android:name=".ui.AddRecipeActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
             android:name=".ui.ResultsActivity"
             android:exported="false" />
         <activity

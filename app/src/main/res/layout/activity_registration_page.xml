@@ -68,17 +68,6 @@
                 android:backgroundTint="@color/backgroundLight" />
 
             <EditText
-                android:id="@+id/registerUsername"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Username"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/textSecondary"
-                android:backgroundTint="@color/backgroundLight" />
-
-            <EditText
                 android:id="@+id/registerPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +91,6 @@
                 android:onClick="navigateToLoginPage"
                 android:textAllCaps="false"
                 android:textSize="18sp" />
-
 
         </LinearLayout>
     </ScrollView>

@@ -48,7 +48,6 @@ class RegistrationPageActivity : AppCompatActivity() {
     private fun performSignup() {
         val fullName = binding.fullName.text.toString().trim()
         val email = binding.email.text.toString().trim()
-        val username = binding.registerUsername.text.toString().trim()
         val password = binding.registerPassword.text.toString().trim()
 
         // Validate input
@@ -67,11 +66,6 @@ class RegistrationPageActivity : AppCompatActivity() {
             return
         }
 
-        if (username.isEmpty()) {
-            binding.registerUsername.error = "Username is required"
-            return
-        }
-
         if (password.isEmpty()) {
             binding.registerPassword.error = "Password is required"
             return
@@ -85,6 +79,9 @@ class RegistrationPageActivity : AppCompatActivity() {
         // Disable register button to prevent multiple requests
         binding.registerButton.isEnabled = false
         binding.registerButton.text = "Creating Account..."
+
+        // Use email as username since we removed the username field
+        val username = email
 
         // Perform signup API call
         lifecycleScope.launch {

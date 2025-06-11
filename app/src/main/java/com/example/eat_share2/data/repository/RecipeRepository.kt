@@ -4,7 +4,10 @@ import com.example.eat_share2.data.api.RetrofitClient
 import com.example.eat_share2.data.models.ApiRecipe
 import com.example.eat_share2.data.models.Category
 import com.example.eat_share2.data.models.Recipe
+import com.example.eat_share2.data.models.RecipeDetailResponse
+import com.example.eat_share2.data.models.UserDetail
 import com.example.eat_share2.utils.TokenManager
+import kotlinx.coroutines.delay
 
 class RecipeRepository(private val tokenManager: TokenManager) {
 
@@ -108,6 +111,48 @@ class RecipeRepository(private val tokenManager: TokenManager) {
         }
     }
 
+    suspend fun getRecipeDetailById(id: String): Result<RecipeDetailResponse> {
+        return try {
+            val response = RetrofitClient.apiService.getRecipeById(id)
+
+            if (response.isSuccessful) {
+                val recipeDetail = response.body()
+                if (recipeDetail != null) {
+                    Result.success(recipeDetail)
+                } else {
+                    Result.failure(Exception("Recipe not found"))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: "Failed to fetch recipe details"
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getUserById(userId: String): Result<UserDetail> {
+        return try {
+            val response = RetrofitClient.apiService.getUserById(userId)
+
+            if (response.isSuccessful) {
+                val userResponse = response.body()
+                if (userResponse != null && userResponse.message == "User found") {
+                    // Clear sensitive data
+                    val cleanUser = userResponse.user.copy()
+                    Result.success(cleanUser)
+                } else {
+                    Result.failure(Exception("User not found"))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: "Failed to fetch user details"
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getRecipeById(id: String): Result<Recipe?> {
         return try {
             // Since there's no specific endpoint for single recipe, we'll get all and filter
@@ -132,7 +177,7 @@ class RecipeRepository(private val tokenManager: TokenManager) {
         val randomCategory = categoryOverride ?: categories.random().name
         val randomImage = placeholderImages.random()
         val randomPrepTime = listOf("15 min", "20 min", "25 min", "30 min", "35 min", "45 min").random()
-        val randomRating = ((3..5).random()).toFloat()
+        val randomRating = (3..5).random().toFloat()
         val randomReviewCount = (50..500).random()
 
         return Recipe(

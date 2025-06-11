@@ -1,4 +1,4 @@
-package com.example.eat_share2.repository
+package com.example.eat_share2.data.repository
 
 import com.example.eat_share2.data.api.RetrofitClient
 import com.example.eat_share2.data.models.LoginRequest

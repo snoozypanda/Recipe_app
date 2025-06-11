@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.eat_share2.R
 import com.example.eat_share2.databinding.ActivityRegistrationPageBinding
-import com.example.eat_share2.repository.AuthRepository
+import com.example.eat_share2.data.repository.AuthRepository
 import com.example.eat_share2.utils.TokenManager
 import kotlinx.coroutines.launch
 

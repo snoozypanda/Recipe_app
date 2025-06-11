@@ -8,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.eat_share2.R
-import com.example.eat_share2.repository.AuthRepository
+import com.example.eat_share2.data.repository.AuthRepository
 import com.example.eat_share2.utils.TokenManager
 
 class ProfileActivity : BaseActivity() {

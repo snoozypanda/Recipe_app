@@ -1,18 +1,21 @@
 package com.example.eat_share2.ui.viewmodels
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.eat_share2.data.models.Category
 import com.example.eat_share2.data.models.Recipe
 import com.example.eat_share2.data.repository.RecipeRepository
+import com.example.eat_share2.utils.TokenManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomepageViewModel : ViewModel() {
+class HomepageViewModel(application: Application) : AndroidViewModel(application) {
     
-    private val recipeRepository = RecipeRepository()
+    private val tokenManager = TokenManager(application)
+    private val recipeRepository = RecipeRepository(tokenManager)
     
     private val _uiState = MutableStateFlow(HomepageUiState())
     val uiState: StateFlow<HomepageUiState> = _uiState.asStateFlow()
@@ -33,21 +36,28 @@ class HomepageViewModel : ViewModel() {
     
     private fun loadInitialData() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             try {
-                // Load categories and recipes in parallel
-                val categoriesDeferred = recipeRepository.getCategories()
-                val recipesDeferred = recipeRepository.getPopularRecipes()
+                // Load categories (local data)
+                _categories.value = recipeRepository.getCategories()
                 
-                _categories.value = categoriesDeferred
-                allRecipes = recipesDeferred
-                _recipes.value = allRecipes
-                
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = null
-                )
+                // Load recipes from API
+                recipeRepository.getPopularRecipes()
+                    .onSuccess { recipes ->
+                        allRecipes = recipes
+                        _recipes.value = recipes
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+                    .onFailure { exception ->
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = exception.message ?: "Failed to load recipes"
+                        )
+                    }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -59,29 +69,76 @@ class HomepageViewModel : ViewModel() {
     
     fun searchRecipes(query: String) {
         currentSearchQuery = query
+        
+        if (query.isBlank() && selectedCategory == null) {
+            // Show all recipes if no search and no category
+            _recipes.value = allRecipes
+            _uiState.value = _uiState.value.copy(searchQuery = query)
+            return
+        }
+        
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isSearching = true)
+            _uiState.value = _uiState.value.copy(isSearching = true, error = null)
             
             try {
-                val searchResults = if (query.isBlank() && selectedCategory == null) {
-                    allRecipes
-                } else if (selectedCategory != null && query.isBlank()) {
-                    recipeRepository.getRecipesByCategory(selectedCategory!!)
-                } else {
-                    recipeRepository.searchRecipes(query).let { results ->
-                        if (selectedCategory != null) {
-                            results.filter { it.category.equals(selectedCategory, ignoreCase = true) }
-                        } else {
-                            results
-                        }
+                when {
+                    // Search with category filter
+                    selectedCategory != null && query.isNotBlank() -> {
+                        recipeRepository.searchRecipes(query)
+                            .onSuccess { searchResults ->
+                                val filteredResults = searchResults.filter { 
+                                    it.category.equals(selectedCategory, ignoreCase = true) 
+                                }
+                                _recipes.value = filteredResults
+                                _uiState.value = _uiState.value.copy(
+                                    isSearching = false,
+                                    searchQuery = query
+                                )
+                            }
+                            .onFailure { exception ->
+                                _uiState.value = _uiState.value.copy(
+                                    isSearching = false,
+                                    error = exception.message ?: "Search failed"
+                                )
+                            }
+                    }
+                    
+                    // Search only
+                    query.isNotBlank() -> {
+                        recipeRepository.searchRecipes(query)
+                            .onSuccess { searchResults ->
+                                _recipes.value = searchResults
+                                _uiState.value = _uiState.value.copy(
+                                    isSearching = false,
+                                    searchQuery = query
+                                )
+                            }
+                            .onFailure { exception ->
+                                _uiState.value = _uiState.value.copy(
+                                    isSearching = false,
+                                    error = exception.message ?: "Search failed"
+                                )
+                            }
+                    }
+                    
+                    // Category only
+                    selectedCategory != null -> {
+                        recipeRepository.getRecipesByCategory(selectedCategory!!)
+                            .onSuccess { categoryResults ->
+                                _recipes.value = categoryResults
+                                _uiState.value = _uiState.value.copy(
+                                    isSearching = false,
+                                    searchQuery = query
+                                )
+                            }
+                            .onFailure { exception ->
+                                _uiState.value = _uiState.value.copy(
+                                    isSearching = false,
+                                    error = exception.message ?: "Failed to filter by category"
+                                )
+                            }
                     }
                 }
-                
-                _recipes.value = searchResults
-                _uiState.value = _uiState.value.copy(
-                    isSearching = false,
-                    searchQuery = query
-                )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isSearching = false,
@@ -93,36 +150,63 @@ class HomepageViewModel : ViewModel() {
     
     fun selectCategory(category: Category?) {
         selectedCategory = category?.name
+        
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
             try {
-                val filteredRecipes = if (category == null) {
-                    if (currentSearchQuery.isBlank()) {
-                        allRecipes
-                    } else {
-                        recipeRepository.searchRecipes(currentSearchQuery)
-                    }
-                } else {
-                    val categoryRecipes = recipeRepository.getRecipesByCategory(category.name)
-                    if (currentSearchQuery.isBlank()) {
-                        categoryRecipes
-                    } else {
-                        categoryRecipes.filter { 
-                            it.title.contains(currentSearchQuery, ignoreCase = true) ||
-                            it.description.contains(currentSearchQuery, ignoreCase = true) ||
-                            it.ingredients.any { ingredient -> 
-                                ingredient.contains(currentSearchQuery, ignoreCase = true) 
-                            }
+                when {
+                    // No category selected
+                    category == null -> {
+                        if (currentSearchQuery.isBlank()) {
+                            _recipes.value = allRecipes
+                        } else {
+                            recipeRepository.searchRecipes(currentSearchQuery)
+                                .onSuccess { searchResults ->
+                                    _recipes.value = searchResults
+                                }
+                                .onFailure { exception ->
+                                    _uiState.value = _uiState.value.copy(
+                                        error = exception.message ?: "Search failed"
+                                    )
+                                }
                         }
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            selectedCategory = null
+                        )
+                    }
+                    
+                    // Category selected
+                    else -> {
+                        recipeRepository.getRecipesByCategory(category.name)
+                            .onSuccess { categoryResults ->
+                                val filteredResults = if (currentSearchQuery.isBlank()) {
+                                    categoryResults
+                                } else {
+                                    categoryResults.filter { recipe ->
+                                        recipe.title.contains(currentSearchQuery, ignoreCase = true) ||
+                                        recipe.description.contains(currentSearchQuery, ignoreCase = true) ||
+                                        recipe.ingredients.any { ingredient -> 
+                                            ingredient.contains(currentSearchQuery, ignoreCase = true) 
+                                        }
+                                    }
+                                }
+                                
+                                _recipes.value = filteredResults
+                                _uiState.value = _uiState.value.copy(
+                                    isLoading = false,
+                                    selectedCategory = category.name
+                                )
+                            }
+                            .onFailure { exception ->
+                                _uiState.value = _uiState.value.copy(
+                                    isLoading = false,
+                                    error = exception.message ?: "Failed to filter by category"
+                                )
+                            }
                     }
                 }
-                
-                _recipes.value = filteredRecipes
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    selectedCategory = category?.name
-                )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -138,12 +222,17 @@ class HomepageViewModel : ViewModel() {
         _recipes.value = allRecipes
         _uiState.value = _uiState.value.copy(
             searchQuery = "",
-            selectedCategory = null
+            selectedCategory = null,
+            error = null
         )
     }
     
     fun refreshData() {
         loadInitialData()
+    }
+    
+    fun clearError() {
+        _uiState.value = _uiState.value.copy(error = null)
     }
 }
 

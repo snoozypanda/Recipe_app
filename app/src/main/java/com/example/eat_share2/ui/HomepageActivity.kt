@@ -44,6 +44,7 @@ class HomepageActivity : BaseActivity() {
         setupRecyclerViews()
         setupSearchView()
         setupSwipeRefresh()
+        setupEmptyState()
         observeViewModel()
     }
     
@@ -93,6 +94,19 @@ class HomepageActivity : BaseActivity() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.refreshData()
         }
+        
+        binding.swipeRefreshLayout.setColorSchemeResources(
+            R.color.primaryColor,
+            R.color.accentColor
+        )
+    }
+    
+    private fun setupEmptyState() {
+        binding.clearFiltersButton.setOnClickListener {
+            binding.searchEditText.text?.clear()
+            viewModel.clearSearch()
+            categoryAdapter.setSelectedCategory(null)
+        }
     }
     
     private fun observeViewModel() {
@@ -109,11 +123,13 @@ class HomepageActivity : BaseActivity() {
                 // Handle errors
                 uiState.error?.let { error ->
                     Toast.makeText(this@HomepageActivity, error, Toast.LENGTH_LONG).show()
+                    viewModel.clearError()
                 }
                 
                 // Update search query
                 if (uiState.searchQuery != binding.searchEditText.text.toString()) {
                     binding.searchEditText.setText(uiState.searchQuery)
+                    binding.searchEditText.setSelection(uiState.searchQuery.length)
                 }
                 
                 // Show/hide clear button
@@ -121,7 +137,7 @@ class HomepageActivity : BaseActivity() {
                     if (uiState.searchQuery.isNotEmpty() || uiState.selectedCategory != null) 
                         View.VISIBLE else View.GONE
                 
-                // Update results count
+                // Update results text
                 updateResultsText(uiState)
             }
         }
@@ -137,12 +153,12 @@ class HomepageActivity : BaseActivity() {
                 recipeAdapter.submitList(recipes)
                 
                 // Show/hide empty state
-                binding.emptyStateLayout.visibility = 
-                    if (recipes.isEmpty() && !viewModel.uiState.value.isLoading) 
-                        View.VISIBLE else View.GONE
-                binding.recipesRecyclerView.visibility = 
-                    if (recipes.isEmpty() && !viewModel.uiState.value.isLoading) 
-                        View.GONE else View.VISIBLE
+                val showEmptyState = recipes.isEmpty() && 
+                    !viewModel.uiState.value.isLoading && 
+                    !viewModel.uiState.value.isSearching
+                
+                binding.emptyStateLayout.visibility = if (showEmptyState) View.VISIBLE else View.GONE
+                binding.recipesRecyclerView.visibility = if (showEmptyState) View.GONE else View.VISIBLE
             }
         }
     }
@@ -156,7 +172,7 @@ class HomepageActivity : BaseActivity() {
                 "Found $recipesCount recipes for \"${uiState.searchQuery}\""
             uiState.selectedCategory != null -> 
                 "$recipesCount ${uiState.selectedCategory} recipes"
-            else -> "Popular Recipes"
+            else -> "Popular Recipes ($recipesCount)"
         }
         
         binding.sectionTitle.text = resultsText

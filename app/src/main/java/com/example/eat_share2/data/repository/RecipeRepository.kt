@@ -1,12 +1,15 @@
 package com.example.eat_share2.data.repository
 
+import com.example.eat_share2.data.api.RetrofitClient
+import com.example.eat_share2.data.models.ApiRecipe
 import com.example.eat_share2.data.models.Category
 import com.example.eat_share2.data.models.Recipe
+import com.example.eat_share2.utils.TokenManager
 import kotlinx.coroutines.delay
 
-class RecipeRepository {
+class RecipeRepository(private val tokenManager: TokenManager) {
     
-    // Mock data for demonstration
+    // Categories remain static as they're not provided by API
     private val categories = listOf(
         Category("1", "Breakfast", "🍳"),
         Category("2", "Lunch", "🥗"),
@@ -16,148 +19,155 @@ class RecipeRepository {
         Category("6", "Beverages", "🥤")
     )
     
-    private val recipes = listOf(
-        Recipe(
-            id = "1",
-            title = "Spaghetti Carbonara",
-            description = "Classic Italian pasta dish with eggs, cheese, and pancetta",
-            imageUrl = "https://images.pexels.com/photos/4518843/pexels-photo-4518843.jpeg",
-            prepTime = "30 min",
-            rating = 4.5f,
-            reviewCount = 278,
-            category = "Dinner",
-            ingredients = listOf("Spaghetti", "Eggs", "Pancetta", "Parmesan", "Black pepper"),
-            instructions = listOf(
-                "Cook spaghetti according to package directions",
-                "Fry pancetta until crispy",
-                "Mix eggs with cheese",
-                "Combine hot pasta with egg mixture",
-                "Add pancetta and serve immediately"
-            )
-        ),
-        Recipe(
-            id = "2",
-            title = "Chicken Caesar Salad",
-            description = "Fresh romaine lettuce with grilled chicken and caesar dressing",
-            imageUrl = "https://images.pexels.com/photos/2097090/pexels-photo-2097090.jpeg",
-            prepTime = "20 min",
-            rating = 4.7f,
-            reviewCount = 189,
-            category = "Lunch",
-            ingredients = listOf("Romaine lettuce", "Chicken breast", "Croutons", "Parmesan", "Caesar dressing"),
-            instructions = listOf(
-                "Grill chicken breast until cooked through",
-                "Wash and chop romaine lettuce",
-                "Make caesar dressing",
-                "Combine all ingredients",
-                "Serve immediately"
-            )
-        ),
-        Recipe(
-            id = "3",
-            title = "Pancakes with Berries",
-            description = "Fluffy pancakes topped with fresh berries and maple syrup",
-            imageUrl = "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg",
-            prepTime = "25 min",
-            rating = 4.8f,
-            reviewCount = 342,
-            category = "Breakfast",
-            ingredients = listOf("Flour", "Eggs", "Milk", "Berries", "Maple syrup"),
-            instructions = listOf(
-                "Mix dry ingredients",
-                "Combine wet ingredients",
-                "Mix batter until just combined",
-                "Cook pancakes on griddle",
-                "Serve with berries and syrup"
-            )
-        ),
-        Recipe(
-            id = "4",
-            title = "Chocolate Chip Cookies",
-            description = "Classic homemade chocolate chip cookies",
-            imageUrl = "https://images.pexels.com/photos/230325/pexels-photo-230325.jpeg",
-            prepTime = "45 min",
-            rating = 4.6f,
-            reviewCount = 156,
-            category = "Dessert",
-            ingredients = listOf("Flour", "Butter", "Sugar", "Chocolate chips", "Vanilla"),
-            instructions = listOf(
-                "Cream butter and sugar",
-                "Add eggs and vanilla",
-                "Mix in flour",
-                "Fold in chocolate chips",
-                "Bake for 10-12 minutes"
-            )
-        ),
-        Recipe(
-            id = "5",
-            title = "Grilled Salmon",
-            description = "Perfectly grilled salmon with herbs and lemon",
-            imageUrl = "https://images.pexels.com/photos/725991/pexels-photo-725991.jpeg",
-            prepTime = "35 min",
-            rating = 4.4f,
-            reviewCount = 203,
-            category = "Dinner",
-            ingredients = listOf("Salmon fillet", "Lemon", "Herbs", "Olive oil", "Salt"),
-            instructions = listOf(
-                "Preheat grill to medium-high",
-                "Season salmon with herbs and salt",
-                "Brush with olive oil",
-                "Grill for 4-5 minutes per side",
-                "Serve with lemon wedges"
-            )
-        ),
-        Recipe(
-            id = "6",
-            title = "Avocado Toast",
-            description = "Simple and healthy avocado toast with toppings",
-            imageUrl = "https://images.pexels.com/photos/1351238/pexels-photo-1351238.jpeg",
-            prepTime = "10 min",
-            rating = 4.3f,
-            reviewCount = 89,
-            category = "Breakfast",
-            ingredients = listOf("Bread", "Avocado", "Salt", "Pepper", "Lime"),
-            instructions = listOf(
-                "Toast bread until golden",
-                "Mash avocado with lime",
-                "Season with salt and pepper",
-                "Spread on toast",
-                "Add desired toppings"
-            )
-        )
+    // Placeholder images for recipes
+    private val placeholderImages = listOf(
+        "https://images.pexels.com/photos/4518843/pexels-photo-4518843.jpeg",
+        "https://images.pexels.com/photos/2097090/pexels-photo-2097090.jpeg",
+        "https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg",
+        "https://images.pexels.com/photos/230325/pexels-photo-230325.jpeg",
+        "https://images.pexels.com/photos/725991/pexels-photo-725991.jpeg",
+        "https://images.pexels.com/photos/1351238/pexels-photo-1351238.jpeg"
     )
     
     suspend fun getCategories(): List<Category> {
-        delay(500) // Simulate network delay
         return categories
     }
     
-    suspend fun getPopularRecipes(): List<Recipe> {
-        delay(500) // Simulate network delay
-        return recipes.sortedByDescending { it.rating }
-    }
-    
-    suspend fun searchRecipes(query: String): List<Recipe> {
-        delay(500) // Simulate network delay
-        return if (query.isBlank()) {
-            recipes
-        } else {
-            recipes.filter { 
-                it.title.contains(query, ignoreCase = true) ||
-                it.description.contains(query, ignoreCase = true) ||
-                it.category.contains(query, ignoreCase = true) ||
-                it.ingredients.any { ingredient -> ingredient.contains(query, ignoreCase = true) }
+    suspend fun getPopularRecipes(): Result<List<Recipe>> {
+        return try {
+            val response = RetrofitClient.apiService.getRecipes()
+            
+            if (response.isSuccessful) {
+                val recipeResponse = response.body()
+                if (recipeResponse != null && recipeResponse.message == "success") {
+                    val recipes = recipeResponse.recipes?.map { apiRecipe ->
+                        convertApiRecipeToRecipe(apiRecipe)
+                    } ?: emptyList()
+                    
+                    Result.success(recipes)
+                } else {
+                    Result.failure(Exception("Failed to fetch recipes: ${recipeResponse?.message ?: "Unknown error"}"))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: "Failed to fetch recipes"
+                Result.failure(Exception(errorMessage))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
     
-    suspend fun getRecipesByCategory(category: String): List<Recipe> {
-        delay(500) // Simulate network delay
-        return recipes.filter { it.category.equals(category, ignoreCase = true) }
+    suspend fun searchRecipes(query: String): Result<List<Recipe>> {
+        return try {
+            val response = if (query.isBlank()) {
+                RetrofitClient.apiService.getRecipes()
+            } else {
+                RetrofitClient.apiService.searchRecipes(query)
+            }
+            
+            if (response.isSuccessful) {
+                val recipeResponse = response.body()
+                if (recipeResponse != null && recipeResponse.message == "success") {
+                    val recipes = recipeResponse.recipes?.map { apiRecipe ->
+                        convertApiRecipeToRecipe(apiRecipe)
+                    } ?: emptyList()
+                    
+                    Result.success(recipes)
+                } else {
+                    Result.failure(Exception("Search failed: ${recipeResponse?.message ?: "Unknown error"}"))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: "Search failed"
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
     
-    suspend fun getRecipeById(id: String): Recipe? {
-        delay(500) // Simulate network delay
-        return recipes.find { it.id == id }
+    suspend fun getRecipesByCategory(category: String): Result<List<Recipe>> {
+        return try {
+            val response = RetrofitClient.apiService.getRecipesByCategory(category)
+            
+            if (response.isSuccessful) {
+                val recipeResponse = response.body()
+                if (recipeResponse != null && recipeResponse.message == "success") {
+                    val recipes = recipeResponse.recipes?.map { apiRecipe ->
+                        convertApiRecipeToRecipe(apiRecipe, category)
+                    } ?: emptyList()
+                    
+                    Result.success(recipes)
+                } else {
+                    Result.failure(Exception("Failed to fetch category recipes: ${recipeResponse?.message ?: "Unknown error"}"))
+                }
+            } else {
+                val errorMessage = response.errorBody()?.string() ?: "Failed to fetch category recipes"
+                Result.failure(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    suspend fun getRecipeById(id: String): Result<Recipe?> {
+        return try {
+            // Since there's no specific endpoint for single recipe, we'll get all and filter
+            val allRecipesResult = getPopularRecipes()
+            
+            allRecipesResult.fold(
+                onSuccess = { recipes ->
+                    val recipe = recipes.find { it.id == id }
+                    Result.success(recipe)
+                },
+                onFailure = { exception ->
+                    Result.failure(exception)
+                }
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    private fun convertApiRecipeToRecipe(apiRecipe: ApiRecipe, categoryOverride: String? = null): Recipe {
+        // Generate random values for missing data
+        val randomCategory = categoryOverride ?: categories.random().name
+        val randomImage = placeholderImages.random()
+        val randomPrepTime = listOf("15 min", "20 min", "25 min", "30 min", "35 min", "45 min").random()
+        val randomRating = (3.5f..5.0f).random()
+        val randomReviewCount = (50..500).random()
+        
+        return Recipe(
+            id = apiRecipe.id,
+            title = apiRecipe.name,
+            description = apiRecipe.description,
+            imageUrl = randomImage,
+            prepTime = randomPrepTime,
+            rating = randomRating,
+            reviewCount = randomReviewCount,
+            category = randomCategory,
+            difficulty = listOf("Easy", "Medium", "Hard").random(),
+            servings = (2..6).random(),
+            ingredients = generateRandomIngredients(),
+            instructions = generateRandomInstructions(),
+            isFavorite = false
+        )
+    }
+    
+    private fun generateRandomIngredients(): List<String> {
+        val commonIngredients = listOf(
+            "Salt", "Pepper", "Olive oil", "Garlic", "Onion", "Tomatoes", 
+            "Cheese", "Herbs", "Lemon", "Butter", "Flour", "Eggs"
+        )
+        return commonIngredients.shuffled().take((3..6).random())
+    }
+    
+    private fun generateRandomInstructions(): List<String> {
+        return listOf(
+            "Prepare all ingredients",
+            "Heat oil in a pan",
+            "Cook according to recipe",
+            "Season to taste",
+            "Serve hot and enjoy"
+        )
     }
 }

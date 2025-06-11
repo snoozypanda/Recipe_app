@@ -1,15 +1,14 @@
-package com.example.eat_share2
+package com.example.eat_share2.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
+import com.example.eat_share2.R
 
-class ViewRecipe : AppCompatActivity() {
+class ViewRecipeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_recipie)
 
         val recipeName = intent.getStringExtra("recipeName")
-
     }
 }

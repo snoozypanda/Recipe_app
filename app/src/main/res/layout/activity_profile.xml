@@ -6,150 +6,336 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/backgroundLight"
     tools:context=".ui.ProfileActivity">
+
+    <!-- Custom Header -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="0dp"
+        app:cardBackgroundColor="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Profile"
+                android:textColor="@color/textPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <!-- Main Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true"
-        android:paddingBottom="16dp">
+        android:fillViewport="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="24dp"
-            android:paddingTop="32dp">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <!-- Profile Header -->
-            <LinearLayout
-                android:id="@+id/profileHeader"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:paddingBottom="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:contentDescription="Profile image"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/circle_background"
-                    android:elevation="8dp" />
-
-                <TextView
-                    android:id="@+id/profileName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="John Doe"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textPrimary"
-                    android:layout_marginTop="24dp"
-                    android:letterSpacing="0.02" />
-
-                <TextView
-                    android:id="@+id/profileEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="johndoe@gmail.com"
-                    android:textSize="16sp"
-                    android:textColor="@color/textSecondary"
-                    android:layout_marginTop="8dp" />
-            </LinearLayout>
-
-            <!-- Account Settings Section -->
-            <TextView
-                android:id="@+id/accountSettingsLabel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Account Settings"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/textPrimary"
-                android:layout_marginBottom="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/profileHeader" />
-
+            <!-- Profile Header Card -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/accountCard"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/accountSettingsLabel">
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingVertical="8dp">
+                    android:gravity="center_horizontal"
+                    android:padding="24dp">
+
+                    <!-- Profile Image -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="8dp"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:id="@+id/profileImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/logo"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Profile image" />
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- User Info -->
+                    <TextView
+                        android:id="@+id/profileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loading..."
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textPrimary"
+                        android:layout_marginBottom="4dp" />
 
                     <TextView
-                        android:id="@+id/editProfile"
+                        android:id="@+id/profileEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Loading..."
+                        android:textSize="16sp"
+                        android:textColor="@color/textSecondary"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Stats Row -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Edit Profile"
-                        android:textSize="16sp"
-                        android:textColor="@color/textPrimary"
-                        android:paddingStart="24dp"
-                        android:paddingEnd="24dp"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="@color/textSecondary" />
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:background="@color/backgroundLight"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="12"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Recipes"
+                                android:textSize="12sp"
+                                android:textColor="@color/textSecondary" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="40dp"
+                            android:background="@color/dividerColor" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Favorites"
+                                android:textSize="12sp"
+                                android:textColor="@color/textSecondary" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="40dp"
+                            android:background="@color/dividerColor" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="156"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/primaryColor" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Likes"
+                                android:textSize="12sp"
+                                android:textColor="@color/textSecondary" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Menu Options -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Edit Profile -->
+                    <LinearLayout
+                        android:id="@+id/editProfileLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_edit"
+                            app:tint="@color/primaryColor"
+                            android:layout_marginEnd="16dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Edit Profile"
+                            android:textSize="16sp"
+                            android:textColor="@color/textPrimary" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@android:drawable/ic_menu_more"
+                            app:tint="@color/textSecondary" />
+                    </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
+                        android:layout_marginHorizontal="16dp"
                         android:background="@color/dividerColor" />
 
-                    <TextView
-                        android:id="@+id/changePassword"
+                    <!-- My Recipes -->
+                    <LinearLayout
+                        android:id="@+id/myRecipesLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Change Password"
-                        android:textSize="16sp"
-                        android:textColor="@color/textPrimary"
-                        android:paddingStart="24dp"
-                        android:paddingEnd="24dp"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="@color/textSecondary" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_agenda"
+                            app:tint="@color/primaryColor"
+                            android:layout_marginEnd="16dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="My Recipes"
+                            android:textSize="16sp"
+                            android:textColor="@color/textPrimary" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@android:drawable/ic_menu_more"
+                            app:tint="@color/textSecondary" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:background="@color/dividerColor" />
+
+                    <!-- Settings -->
+                    <LinearLayout
+                        android:id="@+id/settingsLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_preferences"
+                            app:tint="@color/primaryColor"
+                            android:layout_marginEnd="16dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Settings"
+                            android:textSize="16sp"
+                            android:textColor="@color/textPrimary" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@android:drawable/ic_menu_more"
+                            app:tint="@color/textSecondary" />
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Action Buttons Card -->
+            <!-- Action Buttons -->
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/accountCard">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/logoutButton"
@@ -158,12 +344,13 @@
                         android:layout_height="48dp"
                         android:text="Log Out"
                         android:textColor="@color/errorColor"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
                         app:strokeColor="@color/errorColor"
                         app:strokeWidth="1dp"
-                        android:textAllCaps="false"
-                        android:textSize="16sp" />
+                        app:icon="@android:drawable/ic_menu_revert"
+                        app:iconTint="@color/errorColor"
+                        android:layout_marginBottom="12dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/deleteAccountButton"
@@ -173,12 +360,13 @@
                         android:textColor="@color/white"
                         android:backgroundTint="@color/errorColor"
                         android:textAllCaps="false"
-                        android:layout_marginTop="16dp"
                         android:textSize="16sp"
+                        app:icon="@android:drawable/ic_menu_delete"
+                        app:iconTint="@color/white"
                         style="@style/Widget.MaterialComponents.Button" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </ScrollView>
 
     <!-- Bottom Navigation -->

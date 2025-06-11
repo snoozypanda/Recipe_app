@@ -10,5 +10,5 @@ data class User(
     val id: String,
     val username: String,
     val email: String? = null,
-    val fullName: String? = null
+    val name: String? = null
 )

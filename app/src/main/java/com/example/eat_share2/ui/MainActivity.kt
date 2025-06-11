@@ -52,12 +52,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performLogin() {
-        val username = binding.username.text.toString().trim()
+        val email = binding.email.text.toString().trim()
         val password = binding.password.text.toString().trim()
 
         // Validate input
-        if (username.isEmpty()) {
-            binding.username.error = "Username is required"
+        if (email.isEmpty()) {
+            binding.email.error = "Email is required"
+            return
+        }
+
+        if (!isValidEmail(email)) {
+            binding.email.error = "Please enter a valid email address"
             return
         }
 
@@ -72,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         // Perform login API call
         lifecycleScope.launch {
-            authRepository.login(username, password)
+            authRepository.login(email, password)
                 .onSuccess { loginResponse ->
                     // Login successful
                     Toast.makeText(this@MainActivity, "Login successful!", Toast.LENGTH_SHORT).show()
@@ -87,6 +92,10 @@ class MainActivity : AppCompatActivity() {
                     binding.loginButton.text = "Login"
                 }
         }
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     private fun navigateToHomepage() {

@@ -10,9 +10,9 @@ import retrofit2.Response
 
 class AuthRepository(private val tokenManager: TokenManager) {
 
-    suspend fun login(username: String, password: String): Result<LoginResponse> {
+    suspend fun login(email: String, password: String): Result<LoginResponse> {
         return try {
-            val loginRequest = LoginRequest(username, password)
+            val loginRequest = LoginRequest(email, password)
             val response: Response<LoginResponse> = RetrofitClient.apiService.login(loginRequest)
 
             if (response.isSuccessful) {
@@ -27,7 +27,7 @@ class AuthRepository(private val tokenManager: TokenManager) {
                             userId = user.id,
                             username = user.username,
                             email = user.email,
-                            fullName = user.fullName
+                            fullName = user.name
                         )
                     }
 
@@ -62,7 +62,7 @@ class AuthRepository(private val tokenManager: TokenManager) {
                                 userId = user.id,
                                 username = user.username,
                                 email = user.email,
-                                fullName = user.fullName
+                                fullName = user.name
                             )
                         }
                     }

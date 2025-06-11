@@ -44,10 +44,11 @@
                 android:shadowRadius="2" />
 
             <EditText
-                android:id="@+id/username"
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
                 android:textColor="@color/white"

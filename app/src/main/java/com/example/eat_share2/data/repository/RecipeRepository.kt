@@ -80,11 +80,11 @@ class RecipeRepository(private val tokenManager: TokenManager) {
             val response = RetrofitClient.apiService.getRecipeById(id)
 
             if (response.isSuccessful) {
-                val recipeDetail = response.body()
-                if (recipeDetail != null) {
-                    Result.success(recipeDetail)
+                val apiResponse = response.body()
+                if (apiResponse != null && apiResponse.message == "success") {
+                    Result.success(apiResponse.recipe)
                 } else {
-                    Result.failure(Exception("Recipe not found"))
+                    Result.failure(Exception("Recipe not found: ${apiResponse?.message ?: "Unknown error"}"))
                 }
             } else {
                 val errorMessage = response.errorBody()?.string() ?: "Failed to fetch recipe details"

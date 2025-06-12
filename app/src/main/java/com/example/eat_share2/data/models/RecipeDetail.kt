@@ -1,9 +1,15 @@
 package com.example.eat_share2.data.models
 
+data class RecipeDetailApiResponse(
+    val message: String,
+    val recipe: RecipeDetailResponse
+)
+
 data class RecipeDetailResponse(
+    val id: String,
     val name: String,
     val description: String,
-    val userId: String,
+    val userId: String? = null,
     val steps: List<RecipeStep>,
     val ingredients: List<RecipeIngredient>
 )

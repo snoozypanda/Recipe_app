@@ -17,14 +17,22 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Recipe Image -->
-        <ImageView
-            android:id="@+id/recipeImage"
+        <!-- Recipe Image with proper aspect ratio -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/background"
-            android:contentDescription="Recipe Image" />
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/recipeImage"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:background="@drawable/background"
+                android:contentDescription="Recipe Image" />
+        </androidx.cardview.widget.CardView>
 
         <!-- Recipe Content -->
         <LinearLayout
@@ -33,18 +41,18 @@
             android:orientation="vertical"
             android:padding="12dp">
 
-            <!-- Category Badge -->
+            <!-- Popular Badge - Static "Popular" text -->
             <TextView
                 android:id="@+id/recipeCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category"
+                android:text="Popular"
                 android:textSize="10sp"
-                android:textColor="@color/primaryColor"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:background="@drawable/category_badge_background"
                 android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
+                android:paddingVertical="4dp"
                 android:layout_marginBottom="8dp"
                 android:textAllCaps="true" />
 

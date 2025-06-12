@@ -4,7 +4,7 @@ import com.example.eat_share2.data.models.CreateRecipeRequest
 import com.example.eat_share2.data.models.CreateRecipeResponse
 import com.example.eat_share2.data.models.LoginRequest
 import com.example.eat_share2.data.models.LoginResponse
-import com.example.eat_share2.data.models.RecipeDetailResponse
+import com.example.eat_share2.data.models.RecipeDetailApiResponse
 import com.example.eat_share2.data.models.RecipeResponse
 import com.example.eat_share2.data.models.SignupRequest
 import com.example.eat_share2.data.models.SignupResponse
@@ -33,7 +33,7 @@ interface ApiService {
     suspend fun getRecipesByCategory(@Query("category") category: String): Response<RecipeResponse>
 
     @GET("recipe/{id}")
-    suspend fun getRecipeById(@Path("id") recipeId: String): Response<RecipeDetailResponse>
+    suspend fun getRecipeById(@Path("id") recipeId: String): Response<RecipeDetailApiResponse>
 
     @GET("user/{id}")
     suspend fun getUserById(@Path("id") userId: String): Response<UserResponse>

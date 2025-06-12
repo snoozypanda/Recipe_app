@@ -141,14 +141,22 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- Recipe Image -->
-                    <ImageView
-                        android:id="@+id/recipeImage"
+                    <!-- Recipe Image with proper aspect ratio -->
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/background"
-                        android:contentDescription="Recipe Image" />
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp">
+
+                        <ImageView
+                            android:id="@+id/recipeImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="250dp"
+                            android:scaleType="centerCrop"
+                            android:adjustViewBounds="true"
+                            android:background="@drawable/background"
+                            android:contentDescription="Recipe Image" />
+                    </androidx.cardview.widget.CardView>
 
                     <!-- Recipe Info -->
                     <LinearLayout

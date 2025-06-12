@@ -1,10 +1,14 @@
 package com.example.eat_share2.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eat_share2.databinding.ActivityViewRecipieBinding
@@ -28,10 +32,21 @@ class ViewRecipeActivity : AppCompatActivity() {
         binding = ActivityViewRecipieBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(bottom = systemBars.bottom, top = systemBars.top)
+            insets
+        }
+
         // Get recipe ID from intent
         recipeId = intent.getStringExtra("recipeId")
+        val recipeName = intent.getStringExtra("recipeName")
+
+        Log.d("ViewRecipeActivity", "Received recipeId: $recipeId")
+        Log.d("ViewRecipeActivity", "Received recipeName: $recipeName")
 
         if (recipeId == null) {
+            Log.e("ViewRecipeActivity", "Recipe ID is null")
             Toast.makeText(this, "Recipe not found", Toast.LENGTH_SHORT).show()
             finish()
             return
@@ -63,6 +78,7 @@ class ViewRecipeActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         binding.backButton.setOnClickListener {
+            Log.d("ViewRecipeActivity", "Back button clicked")
             finish()
         }
 
@@ -73,6 +89,7 @@ class ViewRecipeActivity : AppCompatActivity() {
 
         binding.retryButton.setOnClickListener {
             recipeId?.let { id ->
+                Log.d("ViewRecipeActivity", "Retry button clicked, reloading recipe: $id")
                 viewModel.loadRecipeDetails(id)
             }
         }
@@ -81,6 +98,8 @@ class ViewRecipeActivity : AppCompatActivity() {
     private fun observeViewModel() {
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
+                Log.d("ViewRecipeActivity", "UI State updated - Loading: ${uiState.isLoading}, Error: ${uiState.error}, Recipe: ${uiState.recipeDetail?.name}")
+
                 // Handle loading state
                 binding.loadingLayout.visibility = if (uiState.isLoading) View.VISIBLE else View.GONE
                 binding.contentScrollView.visibility = if (uiState.isLoading) View.GONE else View.VISIBLE
@@ -88,6 +107,7 @@ class ViewRecipeActivity : AppCompatActivity() {
 
                 // Handle error state
                 uiState.error?.let { error ->
+                    Log.e("ViewRecipeActivity", "Error state: $error")
                     binding.loadingLayout.visibility = View.GONE
                     binding.contentScrollView.visibility = View.GONE
                     binding.errorLayout.visibility = View.VISIBLE
@@ -99,6 +119,10 @@ class ViewRecipeActivity : AppCompatActivity() {
 
                 // Handle recipe data
                 uiState.recipeDetail?.let { recipe ->
+                    Log.d("ViewRecipeActivity", "Displaying recipe: ${recipe.name}")
+                    Log.d("ViewRecipeActivity", "Ingredients count: ${recipe.ingredients.size}")
+                    Log.d("ViewRecipeActivity", "Steps count: ${recipe.steps.size}")
+
                     binding.loadingLayout.visibility = View.GONE
                     binding.errorLayout.visibility = View.GONE
                     binding.contentScrollView.visibility = View.VISIBLE
@@ -117,6 +141,7 @@ class ViewRecipeActivity : AppCompatActivity() {
 
                 // Handle user data
                 uiState.userDetail?.let { user ->
+                    Log.d("ViewRecipeActivity", "Displaying chef: ${user.name}")
                     binding.chefName.text = user.name
                 }
             }

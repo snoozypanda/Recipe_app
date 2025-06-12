@@ -205,7 +205,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:alpha="0.85">
 
         <!-- Add Recipe FAB -->
         <LinearLayout
@@ -213,7 +214,8 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:paddingHorizontal="20dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            android:alpha="0.85">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/addRecipeFab"
@@ -231,7 +233,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:elevation="8dp"
             app:menu="@menu/bottom_navigation_menu"
             app:itemIconTint="@color/bottom_nav_color"
             app:itemTextColor="@color/bottom_nav_color"

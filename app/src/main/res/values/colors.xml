@@ -11,5 +11,6 @@
     <color name="backgroundLight">#F9F9F9</color> <!-- Light background color for cards -->
     <color name="dividerColor">#E0E0E0</color> <!-- Light gray for dividers -->
     <color name="errorColor">#F44336</color> <!-- Error messages -->
+    <color name="transparent">#00FFFFFF</color>
 
 </resources>

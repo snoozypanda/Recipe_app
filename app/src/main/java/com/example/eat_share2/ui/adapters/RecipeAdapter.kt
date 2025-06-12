@@ -38,7 +38,9 @@ class RecipeAdapter(
             recipeTitle.text = recipe.title
             recipeTime.text = recipe.prepTime
             recipeRating.text = "${recipe.rating} ★ (${recipe.reviewCount})"
-            recipeCategory.text = recipe.category
+
+            // Always show "Popular" instead of dynamic category
+            recipeCategory.text = "Popular"
 
             // For now, we'll use a placeholder background
             // In a real app, you'd use an image loading library like Glide or Picasso

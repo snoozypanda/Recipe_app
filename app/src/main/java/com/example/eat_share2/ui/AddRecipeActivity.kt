@@ -35,7 +35,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.addRecipeActivity) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.updatePadding(bottom = systemBars.bottom)
+            view.updatePadding(bottom = systemBars.bottom, top = systemBars.top)
             insets
         }
 

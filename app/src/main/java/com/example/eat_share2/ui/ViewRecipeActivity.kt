@@ -1,10 +1,12 @@
 package com.example.eat_share2.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,6 +17,7 @@ import com.example.eat_share2.databinding.ActivityViewRecipieBinding
 import com.example.eat_share2.ui.adapters.IngredientAdapter
 import com.example.eat_share2.ui.adapters.InstructionAdapter
 import com.example.eat_share2.ui.viewmodels.ViewRecipeViewModel
+import com.example.eat_share2.utils.RatingManager
 import kotlinx.coroutines.launch
 
 class ViewRecipeActivity : AppCompatActivity() {
@@ -24,8 +27,12 @@ class ViewRecipeActivity : AppCompatActivity() {
 
     private lateinit var ingredientAdapter: IngredientAdapter
     private lateinit var instructionAdapter: InstructionAdapter
+    private lateinit var ratingManager: RatingManager
 
     private var recipeId: String? = null
+    private var currentRating: Float = 0f
+    private var currentReviewCount: Int = 0
+    private var hasRatingChanged = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +45,18 @@ class ViewRecipeActivity : AppCompatActivity() {
             insets
         }
 
+        // Initialize RatingManager
+        ratingManager = RatingManager(this)
+
         // Get recipe ID from intent
         recipeId = intent.getStringExtra("recipeId")
         val recipeName = intent.getStringExtra("recipeName")
+        currentRating = intent.getFloatExtra("current_rating", 0f)
+        currentReviewCount = intent.getIntExtra("current_review_count", 0)
 
         Log.d("ViewRecipeActivity", "Received recipeId: $recipeId")
         Log.d("ViewRecipeActivity", "Received recipeName: $recipeName")
+        Log.d("ViewRecipeActivity", "Current rating: $currentRating, reviews: $currentReviewCount")
 
         if (recipeId == null) {
             Log.e("ViewRecipeActivity", "Recipe ID is null")
@@ -79,12 +92,12 @@ class ViewRecipeActivity : AppCompatActivity() {
     private fun setupClickListeners() {
         binding.backButton.setOnClickListener {
             Log.d("ViewRecipeActivity", "Back button clicked")
-            finish()
+            finishWithResult()
         }
 
         binding.favoriteButton.setOnClickListener {
-            // TODO: Implement favorite functionality
-            Toast.makeText(this, "Favorite feature coming soon!", Toast.LENGTH_SHORT).show()
+            // Show rating dialog
+            showRatingDialog()
         }
 
         binding.retryButton.setOnClickListener {
@@ -93,6 +106,60 @@ class ViewRecipeActivity : AppCompatActivity() {
                 viewModel.loadRecipeDetails(id)
             }
         }
+    }
+
+    private fun showRatingDialog() {
+        val ratingOptions = arrayOf("1 ⭐", "2 ⭐⭐", "3 ⭐⭐⭐", "4 ⭐⭐⭐⭐", "5 ⭐⭐⭐⭐⭐")
+
+        AlertDialog.Builder(this)
+            .setTitle("Rate this Recipe")
+            .setItems(ratingOptions) { _, which ->
+                val newRating = (which + 1).toFloat()
+                updateRating(newRating)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun updateRating(newRating: Float) {
+        recipeId?.let { id ->
+            // Simulate review count increase
+            val newReviewCount = currentReviewCount + 1
+
+            // Calculate new average rating (simplified)
+            val totalRating = (currentRating * currentReviewCount) + newRating
+            val averageRating = totalRating / newReviewCount
+
+            // Update current values
+            currentRating = averageRating
+            currentReviewCount = newReviewCount
+            hasRatingChanged = true
+
+            // Save the rating update
+            ratingManager.saveRatingUpdate(id, averageRating, newReviewCount)
+
+            Toast.makeText(this, "Thank you for rating! New rating: ${String.format("%.1f", averageRating)} ⭐", Toast.LENGTH_SHORT).show()
+
+            Log.d("ViewRecipeActivity", "Rating updated: $averageRating, reviews: $newReviewCount")
+        }
+    }
+
+    private fun finishWithResult() {
+        if (hasRatingChanged && recipeId != null) {
+            val resultIntent = Intent().apply {
+                putExtra("rating_updated", true)
+                putExtra("recipe_id", recipeId)
+                putExtra("new_rating", currentRating)
+                putExtra("new_review_count", currentReviewCount)
+            }
+            setResult(RESULT_OK, resultIntent)
+        }
+        finish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishWithResult()
     }
 
     private fun observeViewModel() {

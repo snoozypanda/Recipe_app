@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.eat_share2.R
@@ -34,7 +33,7 @@ class HomepageActivity : BaseActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
@@ -68,14 +67,35 @@ class HomepageActivity : BaseActivity() {
     }
 
     private fun setupSearchView() {
-        binding.searchEditText.addTextChangedListener { editable ->
-            val query = editable?.toString() ?: ""
-            viewModel.searchRecipes(query)
+        // Search button - only search when clicked
+        binding.searchButton.setOnClickListener {
+            val query = binding.searchEditText.text.toString().trim()
+            if (query.isNotEmpty()) {
+                viewModel.searchRecipes(query)
+            } else {
+                viewModel.clearSearch()
+            }
         }
 
+        // Clear search button
         binding.clearSearchButton.setOnClickListener {
             binding.searchEditText.text?.clear()
             viewModel.clearSearch()
+        }
+
+        // Handle enter key in search field
+        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
+                val query = binding.searchEditText.text.toString().trim()
+                if (query.isNotEmpty()) {
+                    viewModel.searchRecipes(query)
+                } else {
+                    viewModel.clearSearch()
+                }
+                true
+            } else {
+                false
+            }
         }
     }
 
@@ -121,15 +141,9 @@ class HomepageActivity : BaseActivity() {
                     viewModel.clearError()
                 }
 
-                // Update search query
-                if (uiState.searchQuery != binding.searchEditText.text.toString()) {
-                    binding.searchEditText.setText(uiState.searchQuery)
-                    binding.searchEditText.setSelection(uiState.searchQuery.length)
-                }
-
-                // Show/hide clear button
-                binding.clearSearchButton.visibility =
-                    if (uiState.searchQuery.isNotEmpty()) View.VISIBLE else View.GONE
+                // Show/hide clear button based on search text
+                val hasSearchText = binding.searchEditText.text.toString().isNotEmpty()
+                binding.clearSearchButton.visibility = if (hasSearchText) View.VISIBLE else View.GONE
 
                 // Update results text
                 updateResultsText(uiState)

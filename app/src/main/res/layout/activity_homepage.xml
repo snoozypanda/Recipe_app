@@ -107,6 +107,18 @@
                             android:layout_marginEnd="8dp"
                             android:visibility="gone" />
 
+                        <!-- Search Button -->
+                        <ImageView
+                            android:id="@+id/searchButton"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@android:drawable/ic_menu_search"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:padding="6dp"
+                            android:layout_marginEnd="4dp"
+                            android:contentDescription="Search"
+                            app:tint="@color/primaryColor" />
+
                         <ImageView
                             android:id="@+id/clearSearchButton"
                             android:layout_width="24dp"
@@ -118,6 +130,31 @@
                             app:tint="@color/textSecondary" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
+                <!-- Search Instructions -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/backgroundLight"
+                    android:padding="8dp">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@android:drawable/ic_dialog_info"
+                        android:layout_marginEnd="8dp"
+                        app:tint="@color/primaryColor" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Type your search and tap the search icon to find recipes"
+                        android:textColor="@color/textSecondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <!-- Results Section -->
                 <LinearLayout
@@ -182,7 +219,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Try adjusting your search or add a new recipe"
+                        android:text="Try a different search term or add a new recipe"
                         android:textColor="@color/textSecondary"
                         android:textSize="14sp"
                         android:gravity="center"
@@ -192,7 +229,7 @@
                         android:id="@+id/clearFiltersButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Clear Filters"
+                        android:text="Clear Search"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         app:strokeColor="@color/primaryColor"
                         android:textColor="@color/primaryColor" />

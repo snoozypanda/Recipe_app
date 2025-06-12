@@ -22,3 +22,10 @@ data class Category(
     val icon: String,
     val color: String = "#4CAF50"
 )
+
+// Add a data class for rating updates
+data class RatingUpdate(
+    val recipeId: String,
+    val newRating: Float,
+    val newReviewCount: Int
+)

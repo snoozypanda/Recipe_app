@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.eat_share2.data.models.Recipe
 import com.example.eat_share2.data.repository.RecipeRepository
 import com.example.eat_share2.utils.TokenManager
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ class HomepageViewModel(application: Application) : AndroidViewModel(application
 
     private var allRecipes: List<Recipe> = emptyList()
     private var currentSearchQuery: String = ""
+    private var searchJob: Job? = null
 
     init {
         loadInitialData()
@@ -62,6 +64,9 @@ class HomepageViewModel(application: Application) : AndroidViewModel(application
     fun searchRecipes(query: String) {
         currentSearchQuery = query
 
+        // Cancel previous search job
+        searchJob?.cancel()
+
         if (query.isBlank()) {
             // Show all recipes if no search
             _recipes.value = allRecipes
@@ -69,7 +74,7 @@ class HomepageViewModel(application: Application) : AndroidViewModel(application
             return
         }
 
-        viewModelScope.launch {
+        searchJob = viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isSearching = true, error = null)
 
             try {
@@ -97,11 +102,13 @@ class HomepageViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun clearSearch() {
+        searchJob?.cancel()
         currentSearchQuery = ""
         _recipes.value = allRecipes
         _uiState.value = _uiState.value.copy(
             searchQuery = "",
-            error = null
+            error = null,
+            isSearching = false
         )
     }
 
